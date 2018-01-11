@@ -26,3 +26,11 @@ task buildPage(type : PandocTask) {
         return new File(outputString)
     }
 }
+
+task makePageLinks(type: LinkTask) {
+    group 'Build'
+    description 'Links non-markdown files into the github Page'
+
+    sourceFiles = fileTree(dir: notesDirectory.getAbsolutePath(), exclude: '**/*.md')
+    sourceRoot = notesDirectory
+}
