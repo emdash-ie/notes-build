@@ -9,10 +9,10 @@ task buildDrive(type : PandocTask) {
     group 'Build'
     description 'Generates the pdfs for Drive'
 
-    inputFiles = fileTree(dir: sourceDir, include: '**/*.md')
+    inputFiles = fileTree(dir: notesDirectory.getAbsolutePath(), include: '**/*.md')
 
     outputCalculator = { File input ->
-        Path relativePath = projectDir.toPath().relativize(input.toPath())
+        Path relativePath = notesDirectory.toPath().relativize(input.toPath())
         Path outputPath = buildDir.toPath().resolve(relativePath)
         String outputString = outputPath.toString().replace(".md", ".pdf")
         return new File(outputString)
@@ -22,9 +22,9 @@ task buildDrive(type : PandocTask) {
 task makeDriveLinks(type: LinkTask) {
     group 'Build'
     description 'Links non-markdown files into Drive'
-    
-    sourceFiles = fileTree(dir: sourceDir, exclude: '**/*.md')
-    sourceRoot = new File(sourceDir)
+
+    sourceFiles = fileTree(dir: notesDirectory.getAbsolutePath(), exclude: '**/*.md')
+    sourceRoot = notesDirectory
 }
 
 class PandocTask extends DefaultTask {

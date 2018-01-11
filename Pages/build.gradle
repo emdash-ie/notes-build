@@ -9,11 +9,11 @@ task buildPage(type : PandocTask) {
     group 'Build'
     description 'Generates the html for the github Page'
 
-    inputFiles = fileTree(dir: sourceDir, include: '**/*.md')
+    inputFiles = fileTree(dir: notesDirectory.getAbsolutePath(), include: '**/*.md')
     style = new File('note-style.css')
 
     outputCalculator = { File input ->
-        Path relativePath = projectDir.toPath().relativize(input.toPath())
+        Path relativePath = notesDirectory.toPath().relativize(input.toPath())
         Path outputPath = buildDir.toPath().resolve(relativePath)
         String outputString = outputPath.toString().replace(".md", ".html")
         return new File(outputString)

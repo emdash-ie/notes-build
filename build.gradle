@@ -1,5 +1,5 @@
 subprojects {
-    ext.sourceDir = '/Users/Noel/Developer/Projects/Notes/Source'
+    ext.notesDirectory = new File('/Users/Noel/Developer/Projects/Notes/Source')
     ext.LinkTask = LinkTask
 }
 
@@ -9,7 +9,7 @@ class LinkTask extends DefaultTask {
     File sourceRoot
 
     Transformer<File, File> targetCalculator = { File source ->
-        Path relativePath = sourceDir.toPath().relativize(source.toPath())
+        Path relativePath = notesDirectory.toPath().relativize(source.toPath())
         Path targetPath = buildDir.toPath().resolve(relativePath)
         return targetPath.toFile()
     }
