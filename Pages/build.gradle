@@ -3,7 +3,7 @@ import java.io.File
 import java.util.HashSet
 import java.util.Set
 
-buildDir '/Users/Noel/Desktop/Temp'
+buildDir '/Users/Noel/Developer/Projects/Github Page/Notes'
 
 task buildPage(type : PandocTask) {
     group 'Build'
