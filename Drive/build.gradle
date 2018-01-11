@@ -10,6 +10,19 @@ task buildDrive(type : PandocTask) {
     description 'Generates the pdfs for Drive'
 
     inputFiles = fileTree(dir: notesDirectory.getAbsolutePath(), include: '**/*.md')
+    pandocOptions = [
+        "-s",
+        "--highlight-style", "tango",
+        "--pdf-engine=xelatex",
+        "-V", "margin-top=1in",
+        "-V", "margin-bottom=1in",
+        "-V", "margin-left=1.25in",
+        "-V", "margin-right=1.25in",
+        "-V", "mainfont=Source Serif Pro",
+        "-V", "sansfont=Source Sans Pro",
+        "-V", "monofont=Source Code Pro",
+        "-V", "fontsize=12pt"
+    ]
 
     outputCalculator = { File input ->
         Path relativePath = notesDirectory.toPath().relativize(input.toPath())
@@ -25,65 +38,4 @@ task makeDriveLinks(type: LinkTask) {
 
     sourceFiles = fileTree(dir: notesDirectory.getAbsolutePath(), exclude: '**/*.md')
     sourceRoot = notesDirectory
-}
-
-class PandocTask extends DefaultTask {
-    Transformer<File, File> outputCalculator
-    FileCollection inputFiles
-    private Iterable<File> outputFiles
-
-    @SkipWhenEmpty
-    @InputFiles
-    public FileCollection getInputFiles() {
-        return inputFiles
-    }
-
-    @OutputFiles
-    public Iterable<File> getOutputFiles() {
-        if (outputFiles == null) {
-            outputFiles = determineOutputFiles()
-        }
-        return outputFiles
-    }
-
-    private Iterable<File> determineOutputFiles() {
-        Set<File> outputs = new HashSet<File>()
-        inputFiles.each { File input ->
-            outputs.add(outputCalculator.transform(input))
-        }
-        return outputs
-    }
-
-    @TaskAction
-    public void runPandoc(IncrementalTaskInputs inputs) {
-        inputs.outOfDate {input ->
-            project.exec {
-                ignoreExitValue true
-                executable '/usr/local/bin/pandoc'
-                args = [
-                    "${input.getFile().getAbsolutePath()}",
-                    "-o", "${outputCalculator.transform(input.getFile()).getAbsolutePath()}",
-                    "--resource-path=${input.getFile().getParentFile().getAbsolutePath()}",
-                    "-s",
-                    "--highlight-style", "tango",
-                    "--pdf-engine=xelatex",
-                    "-V", "margin-top=1in",
-                    "-V", "margin-bottom=1in",
-                    "-V", "margin-left=1.25in",
-                    "-V", "margin-right=1.25in",
-                    "-V", "mainfont=Source Serif Pro",
-                    "-V", "sansfont=Source Sans Pro",
-                    "-V", "monofont=Source Code Pro",
-                    "-V", "fontsize=12pt"
-                ]
-            }
-        }
-
-        inputs.removed { input ->
-            def outputFile = outputCalculator.transform(input.getFile())
-            if (outputFile.exists()) {
-                outputFile.delete()
-            }
-        }
-    }
 }

@@ -10,67 +10,19 @@ task buildPage(type : PandocTask) {
     description 'Generates the html for the github Page'
 
     inputFiles = fileTree(dir: notesDirectory.getAbsolutePath(), include: '**/*.md')
-    style = new File('note-style.css')
+
+    pandocOptions = [
+        "-t", "html5",
+        "-s",
+        "--highlight-style", "tango",
+        "-c", "${new File('note-style.css').getAbsolutePath()}",
+        "--section-divs",
+    ]
 
     outputCalculator = { File input ->
         Path relativePath = notesDirectory.toPath().relativize(input.toPath())
         Path outputPath = buildDir.toPath().resolve(relativePath)
         String outputString = outputPath.toString().replace(".md", ".html")
         return new File(outputString)
-    }
-}
-
-class PandocTask extends DefaultTask {
-    Closure<File> outputCalculator
-    FileCollection inputFiles
-    File style
-    private Iterable<File> outputFiles
-
-    @SkipWhenEmpty
-    @InputFiles
-    public FileCollection getInputFiles() {
-        return inputFiles
-    }
-
-    @OutputFiles
-    public Iterable<File> getOutputFiles() {
-        if (outputFiles == null) {
-            outputFiles = determineOutputFiles()
-        }
-        return outputFiles
-    }
-
-    private Iterable<File> determineOutputFiles() {
-        Set<File> outputs = new HashSet<File>()
-        inputFiles.each { File input ->
-            outputs.add(outputCalculator(input))
-        }
-        return outputs
-    }
-
-    @TaskAction
-    public void runPandoc(IncrementalTaskInputs inputs) {
-        inputs.outOfDate {input ->
-            project.exec {
-                ignoreExitValue true
-                executable '/usr/local/bin/pandoc'
-                args = [
-                    "${input.getFile().getAbsolutePath()}",
-                    "-o", "${outputCalculator(input.getFile()).getAbsolutePath()}",
-                    "-t", "html5",
-                    "-s",
-                    "--highlight-style", "tango",
-                    "-c", "${style.getAbsolutePath()}",
-                    "--section-divs",
-                ]
-            }
-        }
-
-        inputs.removed { input ->
-            def outputFile = new File(outputCalculator(input.getFile()))
-            if (outputFile.exists()) {
-                outputFile.delete()
-            }
-        }
     }
 }
