@@ -5,9 +5,9 @@ import java.util.Set
 
 buildDir "/Users/Noel/Google Drive/Noel's Notes"
 
-task runPandoc(type : PandocTask) {
+task buildDrive(type : PandocTask) {
     group 'Build'
-    description 'Builds the notes using pandoc'
+    description 'Generates the pdfs for Drive'
 
     inputFiles = fileTree(dir: 'Computer Science', include: '**/*.md')
 
@@ -19,9 +19,9 @@ task runPandoc(type : PandocTask) {
     }
 }
 
-task makeLinks(type: LinkTask) {
+task makeDriveLinks(type: LinkTask) {
     group 'Build'
-    description 'Links non-markdown files into the destination tree'
+    description 'Links non-markdown files into Drive'
 
     sourceFiles = fileTree(dir: 'Computer Science', exclude: '**/*.md')
     targetCalculator = { File source ->

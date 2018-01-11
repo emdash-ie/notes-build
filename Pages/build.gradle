@@ -5,9 +5,9 @@ import java.util.Set
 
 buildDir '/Users/Noel/Desktop/Temp'
 
-task buildNotes(type : PandocTask) {
+task buildPage(type : PandocTask) {
     group 'Build'
-    description 'Builds the notes using pandoc'
+    description 'Generates the html for the github Page'
 
     inputFiles = fileTree(dir: '.', include: '**/*.md')
     style = new File('note-style.css')
