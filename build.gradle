@@ -1,0 +1,3 @@
+subprojects {
+    ext.sourceDir = '/Users/Noel/Developer/Projects/Notes/Source'
+}

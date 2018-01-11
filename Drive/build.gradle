@@ -9,7 +9,7 @@ task buildDrive(type : PandocTask) {
     group 'Build'
     description 'Generates the pdfs for Drive'
 
-    inputFiles = fileTree(dir: 'Computer Science', include: '**/*.md')
+    inputFiles = fileTree(dir: sourceDir, include: '**/*.md')
 
     outputCalculator = { File input ->
         Path relativePath = projectDir.toPath().relativize(input.toPath())

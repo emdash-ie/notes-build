@@ -9,7 +9,7 @@ task buildPage(type : PandocTask) {
     group 'Build'
     description 'Generates the html for the github Page'
 
-    inputFiles = fileTree(dir: '.', include: '**/*.md')
+    inputFiles = fileTree(dir: sourceDir, include: '**/*.md')
     style = new File('note-style.css')
 
     outputCalculator = { File input ->
