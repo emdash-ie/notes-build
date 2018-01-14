@@ -1,3 +1,5 @@
+import java.nio.file.Path
+
 subprojects {
     ext.notesDirectory = new File('/Users/Noel/Developer/Projects/Notes/Source')
     ext.LinkTask = LinkTask
@@ -10,8 +12,8 @@ class LinkTask extends DefaultTask {
     File sourceRoot
 
     Transformer<File, File> targetCalculator = { File source ->
-        Path relativePath = notesDirectory.toPath().relativize(source.toPath())
-        Path targetPath = buildDir.toPath().resolve(relativePath)
+        Path relativePath = sourceRoot.toPath().relativize(source.toPath())
+        Path targetPath = project.buildDir.toPath().resolve(relativePath)
         return targetPath.toFile()
     }
 
