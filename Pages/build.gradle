@@ -5,6 +5,22 @@ import java.util.Set
 
 buildDir '/Users/Noel/Developer/Projects/Github Page/Notes'
 
+task linkPageStylesheet(type: LinkTask) {
+    group 'Build'
+    description 'Links in the stylesheet for the notes'
+
+    sourceFiles = files(new File('note-style.css'))
+    sourceRoot = projectDir
+}
+
+task makePageLinks(type: LinkTask) {
+    group 'Build'
+    description 'Links non-markdown files into the github Page'
+
+    sourceFiles = fileTree(dir: notesDirectory.getAbsolutePath(), exclude: '**/*.md')
+    sourceRoot = notesDirectory
+}
+
 task buildPage(type : PandocTask) {
     group 'Build'
     description 'Generates the html for the github Page'
@@ -15,7 +31,7 @@ task buildPage(type : PandocTask) {
         "-t", "html5",
         "-s",
         "--highlight-style", "tango",
-        "-c", "${new File('note-style.css').getAbsolutePath()}",
+        "-c", "${project.tasks.getByName("linkPageStylesheet").getOutputs().getFiles().getSingleFile().getAbsolutePath()}",
         "--section-divs",
     ]
 
@@ -25,12 +41,4 @@ task buildPage(type : PandocTask) {
         String outputString = outputPath.toString().replace(".md", ".html")
         return new File(outputString)
     }
-}
-
-task makePageLinks(type: LinkTask) {
-    group 'Build'
-    description 'Links non-markdown files into the github Page'
-
-    sourceFiles = fileTree(dir: notesDirectory.getAbsolutePath(), exclude: '**/*.md')
-    sourceRoot = notesDirectory
 }
